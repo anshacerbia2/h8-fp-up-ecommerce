@@ -20,7 +20,9 @@ module.exports = (sequelize, DataTypes) => {
     order_id: DataTypes.STRING,
     transaction_status: DataTypes.STRING,
     transaction_time: DataTypes.DATE,
-    response: DataTypes.TEXT
+    response: DataTypes.TEXT,
+    carts: DataTypes.TEXT,
+    shipping_address: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'Order',

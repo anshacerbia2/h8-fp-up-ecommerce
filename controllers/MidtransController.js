@@ -1,5 +1,7 @@
+const axios = require('axios')
 const midtransClient = require('midtrans-client');
 const { SubCategory, Category, User, Address, Order, Cart, OrderItem, Product, sequelize } = require('../models');
+const orderitem = require('../models/orderitem');
 
 const coreApi = new midtransClient.CoreApi({
   isProduction: false,
@@ -13,7 +15,7 @@ class MidtransController {
     try {
       const { id: UserId } = request.user;
       const { bank } = request.body;
-      console.log(bank);
+
       const user = await User.findByPk(UserId, {
         include: {
           model: Address
@@ -41,6 +43,10 @@ class MidtransController {
         }
       });
 
+      const cartsArr = carts.map(v => {
+        return v.id;
+      })
+
       const customer_details = {
         first_name: user.fName,
         last_name: user.lName,
@@ -61,6 +67,7 @@ class MidtransController {
       const item_list = [];
       carts.forEach(v => {
         item_list.push({
+          productId: v.Product.id,
           name: v.Product.name,
           price: v.Product.price,
           itemImg: v.Product.mainImg,
@@ -76,6 +83,18 @@ class MidtransController {
       });
 
       // const group_seller = {};
+      // carts.forEach(v => {
+      //   if (!group_seller[v.Product.User.email]) {
+      //     group_seller[v.Product.User.id] = {
+      //       origin: v.Product.User.Addresses.find(v => v.default === true).cityId,
+      //       destination: user.Addresses.find(v => v.default === true).cityId,
+      //       weight: 0,
+      //       courier: courier
+      //     };
+      //   }
+      //   group_seller[v.Product.User.id].weight += (v.quantity * 1000);
+      // });
+
       // carts.forEach(v => {
       //   if (!group_seller[v.Product.User.email]) {
       //     console.log([v.Product.User.email]);
@@ -112,7 +131,9 @@ class MidtransController {
         order_id: chargeResponse.order_id,
         transaction_status: chargeResponse.transaction_status,
         transaction_time: chargeResponse.transaction_time,
-        response: JSON.stringify(chargeResponse)
+        response: JSON.stringify(chargeResponse),
+        carts: JSON.stringify(cartsArr),
+        shipping_address: JSON.stringify(shipping_address)
       }, { transaction: t });
 
       item_list.forEach(v => v.OrderId = newOrder.id);
@@ -122,18 +143,65 @@ class MidtransController {
       await t.commit();
       response.status(201).json(chargeResponse);
     } catch (error) {
-      await t.rollback();
       console.log(error);
+      await t.rollback();
       next(error);
     }
   }
-  //
+
   static async notification(request, response, next) {
+    const t = await sequelize.transaction();
     try {
       let notificationJson = await coreApi.transaction.notification(request.body);
-      await Order.update({ response_midtrans: JSON.stringify(notificationJson) }, { where: { order_id: notificationJson.order_id } });
-      response.status(200).json('OK')
+
+      const order = await Order.findOne({ where: { order_id: notificationJson.order_id } })
+      await Order.update({
+        transaction_status: notificationJson.transaction_status,
+        transaction_time: notificationJson.transaction_time,
+        response: JSON.stringify(notificationJson)
+      }, { where: { order_id: notificationJson.order_id }, transaction: t });
+      console.log(order);
+      const orderItems = await OrderItem.findAll({
+        where: {
+          OrderId: order.id,
+        }
+      })
+
+      const orderItemsProd = orderItems.map(v => {
+        return {
+          id: v.productId,
+          qty: v.quantity
+        }
+      })
+
+      const cartsArr = JSON.parse(order.carts);
+      const products = await Product.findAll();
+
+      const dataUpdate = [];
+
+      for (let i = 0; i < orderItemsProd.length; i++) {
+        for (let j = 0; j < products.length; j++) {
+          if (+products[j].id === +orderItemsProd[i].id) {
+            dataUpdate.push({ ...products[j].dataValues, id: products[j].dataValues.id, stock: (products[j].dataValues.stock - orderItemsProd[i].qty) });
+          }
+        }
+      }
+
+      await Product.bulkCreate(
+        dataUpdate,
+        {
+          updateOnDuplicate: ["stock"],
+          transaction: t
+        }
+      );
+
+      await Cart.destroy({ where: { id: cartsArr }, transaction: t });
+
+      await t.commit();
+      response.status(200).json('OK');
     } catch (error) {
+      console.log(error);
+      await t.rollback();
       next(error)
     }
   }

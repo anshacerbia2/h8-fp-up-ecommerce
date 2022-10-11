@@ -73,9 +73,9 @@ class ProductController {
               // where: {
               //   default: true
               // }
-            }
-          }
-        ]
+            },
+          },
+        ],
       });
       if (!product) throw { status: 404, message: "Product not found" };
       response.status(200).json(product);
@@ -86,7 +86,7 @@ class ProductController {
 
   static async fetchProductByTitle(request, response, next) {
     const { search } = request.body;
-    console.log(search)
+    console.log(search);
     try {
       const data = await Product.findAll({
         where: {
@@ -235,7 +235,6 @@ class ProductController {
         image2,
         image3,
       } = request.body;
-
       await Product.update(
         {
           name,

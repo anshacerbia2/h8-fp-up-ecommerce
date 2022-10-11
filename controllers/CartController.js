@@ -42,7 +42,7 @@ class CartController {
 
       const oldCart = await Cart.findOne({ where: { UserId, ProductId } });
       if (oldCart) {
-        await Cart.update({ quantity: oldCart.quantity + quantity }, { where: { id: { [Op.eq]: oldCart.id } } });
+        await Cart.update({ quantity: (+oldCart.quantity) + (+quantity) }, { where: { id: { [Op.eq]: oldCart.id } } });
       } else {
         await Cart.create({ UserId, ProductId, quantity });
       }
@@ -50,7 +50,6 @@ class CartController {
         message: 'Product has been successfully added to cart.'
       });
     } catch (error) {
-      console.log(error);
       next(error);
     }
   }

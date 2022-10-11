@@ -33,6 +33,14 @@ module.exports = {
       response: {
         type: Sequelize.TEXT
       },
+      carts: {
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
+      shipping_address: {
+        allowNull: false,
+        type: Sequelize.TEXT
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

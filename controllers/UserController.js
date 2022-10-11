@@ -23,6 +23,7 @@ class UserController {
           model: Address
         }
       });
+      if (!users) throw { status: 404, message: 'User not found.' };
       response.status(200).json(users);
     } catch (error) {
       next(error);
