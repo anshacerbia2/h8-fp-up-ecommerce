@@ -1,57 +1,97 @@
-if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const request = require("supertest");
 const app = require("../app");
-const { User, Product, sequelize } = require("../models");
-const jwt = require('jsonwebtoken');
+const {
+  User,
+  Product,
+  Category,
+  SubCategory,
+  Image,
+  Address,
+  sequelize,
+} = require("../models");
+const jwt = require("jsonwebtoken");
+let users = require("../data/superadmin.json");
+const categories = require("../data/categories.json");
+const subCategories = require("../data/subcategories.json");
+const address = require("../data/addresses.json");
+const products = require("../data/products.json");
+const images = require("../data/images.json");
+const { hashPw, jwtSign } = require("../helpers");
 
-let validToken, validToken2, invalidToken;
-const userTest1 = {
-  email: "user.test1@mail.com",
-  password: "usertest1"
-};
+// export let tokenAnsha;
+// export let tokenRyan;
+// const ansha = {
+//   email: "sc.anshacerbia@gmail.com",
+//   password: "123456"
+// };
+// const ryan = {
+//   email: "ryanx@mail.com",
+//   password: "123456"
+// };
 
-const userTest2 = {
-  email: "user.test2@mail.com",
-  password: "usertest2"
-};
+// beforeAll(async () => {
+//   // await User.bulkCreate(users);
+//   // await Category.bulkCreate(categories);
+//   // await SubCategory.bulkCreate(subCategories);
+//   // await Product.bulkCreate(products);
+//   // await Image.bulkCreate(images);
+//   // await Address.bulkCreate(address);
+//   const ansha = await User.findOne({
+//     where: {
+//       email: "sc.anshacerbia@gmail.com"
+//     },
+//   });
+//   const anshaPayload = {
+//     id:  ansha.id
+//   }
+//   const createTokenAnsha = jwtSign(anshaPayload, process.env.SECRET);
+//   const ryan = await User.findOne({
+//     where: {
+//       email: "ryanx@mail.com"
+//     }
+//   });
+//   tokenAnsha = crea
+//   const ryanPayload = {
+//     id: ryan.id
+//   }
+//   const createTokenAnsha = jwtSign(ryanPayload, process.env.SECRET);
+// });
 
-beforeAll(async () => {
-  try {
-    const registeredUser = await User.create(userTest1);
-    validToken = jwt.sign({
-      id: registeredUser.id,
-      email: registeredUser.email
-    }, process.env.SECRET);
+// afterAll(async () => {
+//   await User.destroy({
+//     truncate: true,
+//     restartIdentity: true,
+//     cascade: true,
+//   });
+//   // await Category.destroy({
+//   //   truncate: true,
+//   //   restartIdentity: true,
+//   //   cascade: true,
+//   // });
+//   // await SubCategory.destroy({
+//   //   truncate: true,
+//   //   restartIdentity: true,
+//   //   cascade: true,
+//   // });
+//   // await Product.destroy({
+//   //   truncate: true,
+//   //   restartIdentity: true,
+//   //   cascade: true,
+//   // });
+// });
 
-    const registeredUser2 = await User.create(userTest1);
-    validToken2 = jwt.sign({
-      id: registeredUser2.id,
-      email: registeredUser2.email
-    }, process.env.SECRET);
-
-    await Product.bulkCreate(require('../data/products.json'));
-
-    invalidToken =
-      '12345678eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InVzZXIwMUBtYWlsLmNvbSIsImlkIjoxLCJpYXQiOjE2MjI2MDk2NTF9';
-  } catch (error) {
-    console.log(err);
-  }
-});
-
-afterAll(async () => {
-  await User.destroy({
-    truncate: true,
-    restartIdentity: true,
-    cascade: true
-  });
-  await Product.destroy({
-    truncate: true,
-    restartIdentity: true,
-    cascade: true
-  });
-});
-
-describe('USER ROUTES', () => {
+describe("USER ROUTES", () => {
+  describe("POST SUCCESS /login - 200", () => {
+    it("output ====> ACCESS_TOKEN", async () => {
+      const response = await request(app).post("/login").send({
+        email: "hajiali@gmail.com",
+        password: "123456",
+      });
+      expect(response.status).toBe(200);
+      expect(response.body).toHaveProperty("access_token", expect.any(String));
+    });
+  }); // OK
   describe('POST /register - 201', () => {
     it('output ====> Account has been created successfully', async () => {
       const response = await request(app).post('/register').send({
@@ -62,322 +102,130 @@ describe('USER ROUTES', () => {
         phoneNumber: '081212121212'
       });
       expect(response.status).toBe(201);
-      expect(response.body.message).toBe('Account has been created successfully');
+      expect(response.body.message).toBe('Account has been successfully added.');
     });
   });
-
-  describe('POST /register - 400', () => {
-    it('should return Email field is required', async () => {
-      const response = await request(app).post('/pub/register').send({
-        username: 'user',
-        email: '',
+  describe('POST FAIL /register - 201', () => {
+    it('output ====> BAD REQUEST 400, EMAIL IS ALREADY EXIST', async () => {
+      const response = await request(app).post('/register').send({
+        fName: 'Hitam',
+        lName: 'Putih',
+        email: 'hitamputih@gmail.com',
         password: '123456',
-        phoneNumber: '0812xxxxxxxx',
-        address: 'Jl. ABC No. 7'
+        phoneNumber: '081212121212'
       });
       expect(response.status).toBe(400);
-      expect(response.body.errors).toBeInstanceOf(Array);
-      expect(response.body.errors[0].message).toBe('Email field is required');
     });
   });
-
-  describe('POST /pub/register - 400', () => {
-    it('should return Password field is required', async () => {
-      const response = await request(app).post('/pub/register').send({
-        username: '',
-        email: 'user@mail.com',
-        password: '',
-        phoneNumber: '0812xxxxxxxx',
-        address: 'Jl. ABC No. 7'
-      });
-      expect(response.status).toBe(400);
-      expect(response.body.errors).toBeInstanceOf(Array);
-      expect(response.body.errors[0].message).toBe('Password field is required');
-    });
-  });
-
-  describe('POST /pub/register - 400', () => {
-    it('should return Email field is required', async () => {
-      const response = await request(app).post('/pub/register').send({
-        username: 'user',
+  describe('POST FAIL /register - 400', () => {
+    it('output ====> BAD REQUEST 400, IF EMAIL IS NULL', async () => {
+      const response = await request(app).post('/register').send({
+        fName: 'Hitam',
+        lName: 'Putih',
         password: '123456',
-        phoneNumber: '0812xxxxxxxx',
-        address: 'Jl. ABC No. 7'
+        phoneNumber: '081212121212'
       });
       expect(response.status).toBe(400);
       expect(response.body.errors).toBeInstanceOf(Array);
-      expect(response.body.errors[0].message).toBe('Email field is required');
+      expect(response.body.errors[0].message).toBe('Email is required.');
     });
   });
-
-  describe('POST /pub/register - 400', () => {
-    it('should return Password field is required', async () => {
-      const response = await request(app).post('/pub/register').send({
-        username: '',
-        email: 'user@mail.com',
-        phoneNumber: '0812xxxxxxxx',
-        address: 'Jl. ABC No. 7'
+  describe('POST FAIL /register - 400', () => {
+    it('output ====> BAD REQUEST 400, PASSWORD IS NULL', async () => {
+      const response = await request(app).post('/register').send({
+        fName: 'Hitam',
+        lName: 'Putih',
+        email: 'hitamputih@gmail.com',
+        phoneNumber: '081212121212'
       });
       expect(response.status).toBe(400);
       expect(response.body.errors).toBeInstanceOf(Array);
-      expect(response.body.errors[0].message).toBe('Password field is required');
+      expect(response.body.errors[0].message).toBe('Password is required.');
     });
   });
-
-  describe('POST /pub/register - 400', () => {
-    it('should return Email address already in use!', async () => {
-      const response = await request(app).post('/pub/register').send({
-        username: 'user',
-        email: 'l.anshacerbia@gmail.com',
+  describe('POST FAIL /register - 400', () => {
+    it('output ====> BAD REQUEST 400, FIRSTNAME IS NULL', async () => {
+      const response = await request(app).post('/register').send({
+        lName: 'Putih',
+        email: 'hitamputih@gmail.com',
         password: '123456',
-        phoneNumber: '0812xxxxxxxx',
-        address: 'Jl. ABC No. 7'
+        phoneNumber: '081212121212'
       });
       expect(response.status).toBe(400);
       expect(response.body.errors).toBeInstanceOf(Array);
-      expect(response.body.errors[0].message).toBe('Email address already in use!');
+      expect(response.body.errors[0].message).toBe('First Name is required.');
     });
   });
-
-  describe('POST /pub/register - 400', () => {
-    it('should return Please input valid email', async () => {
-      const response = await request(app).post('/pub/register').send({
-        username: 'user',
-        email: 'email',
+  describe('POST FAIL /register - 400', () => {
+    it('output ====> BAD REQUEST 400, LASTNAME IS NULL', async () => {
+      const response = await request(app).post('/register').send({
+        fName: 'Hitam',
+        email: 'hitamputih@gmail.com',
         password: '123456',
-        phoneNumber: '0812xxxxxxxx',
-        address: 'Jl. ABC No. 7'
+        phoneNumber: '081212121212'
       });
       expect(response.status).toBe(400);
       expect(response.body.errors).toBeInstanceOf(Array);
-      expect(response.body.errors[0].message).toBe('Please input valid email');
+      expect(response.body.errors[0].message).toBe('Last Name is required.');
     });
   });
-});
-
-describe('POST /pub/login', () => {
-  describe('POST /pub/login - 200', () => {
-    it('should return an access token and user insensitive info', async () => {
-      const response = await request(app).post('/pub/login').send({
-        email: 'user@gmail.com',
-        password: '123456'
-      });
+  // FETCH USER
+  describe('GET USER SUCCESS', () => {
+    it('output ====> ', async () => {
+      const response = await request(app).get('/users');
+      // console.log(response);
       expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('access_token', expect.any(String));
-      expect(response.body.message).toBe('User logged in successfully');
-      expect(response.body.user).toBeInstanceOf(Object);
+      expect(response.body).toBeInstanceOf(Array);
     });
   });
-
-  describe('POST /pub/login - 401', () => {
-    it('should return an Invalid email or password', async () => {
-      const response = await request(app).post('/pub/login').send({
-        email: 'user@mail.com',
-        password: 'salahpassword'
-      });
-      expect(response.status).toBe(401);
-      expect(response.body.error.message).toBe('Invalid email or password');
-    });
-  });
-
-  describe('POST /pub/login - 401', () => {
-    it('should return an Invalid email or password', async () => {
-      const response = await request(app).post('/pub/login').send({
-        email: 'salahemail',
-        password: '123456'
-      });
-      expect(response.status).toBe(401);
-      expect(response.body.error.message).toBe('Invalid email or password');
-    });
-  });
-
-  describe('POST /pub/login - 401', () => {
-    it('should return an Password is required', async () => {
-      const response = await request(app).post('/pub/login').send({
-        email: 'user@mail.com'
-      });
-      expect(response.status).toBe(400);
-      expect(response.body.errors[0].message).toBe('Password is required');
-    });
-  });
-
-  describe('POST /pub/login - 401', () => {
-    it('should return an Email is required', async () => {
-      const response = await request(app).post('/pub/login').send({
-        password: '123456'
-      });
-      expect(response.status).toBe(400);
-      expect(response.body.errors[0].message).toBe('Email is required');
-    });
-  });
-});
-
-describe('/pub/movies', () => {
-  describe('GET /pub/movies - success with access token', () => {
-    it('should return data in Object', async () => {
-      const response = await request(app).get('/pub/movies', { headers: { access_token: token } });
+  // FETCH USER BY ID
+  describe('GET USER SUCCESS', () => {
+    it('output ====> 200', async () => {
+      const response = await request(app).get('/users/1');
+      // console.log(response);
       expect(response.status).toBe(200);
-      expect(response.body.data).toBeInstanceOf(Object);
-      expect(response.body.data).toHaveProperty('count', expect.any(Number));
-      expect(response.body.data).toHaveProperty('rows', expect.any(Array));
+      expect(response.body).toBeInstanceOf(Object);
     });
   });
-
-  describe('GET /pub/moviess - success without access token', () => {
-    it('should return data in Object', async () => {
-      const response = await request(app).get('/pub/movies')
-      expect(response.status).toBe(200);
-      expect(response.body.data).toBeInstanceOf(Object);
-      expect(response.body.data).toHaveProperty('count', expect.any(Number));
-      expect(response.body.data).toHaveProperty('rows', expect.any(Array));
-    });
-  });
-
-  describe('GET /movies - success with token and with query search', () => {
-    it('should return data in Object', async () => {
-      const response = await request(app).get('/pub/movies?search=tomb', { headers: { access_token: token } });
-      expect(response.status).toBe(200);
-      expect(response.body.data).toBeInstanceOf(Object);
-      expect(response.body.data).toHaveProperty('count', expect.any(Number));
-      expect(response.body.data).toHaveProperty('rows', expect.any(Array));
-    });
-  });
-
-  describe('GET /movies - success without token and with query search', () => {
-    it('should return data in Object', async () => {
-      const response = await request(app).get('/pub/movies?search=tomb');
-      expect(response.status).toBe(200);
-      expect(response.body.data).toBeInstanceOf(Object);
-      expect(response.body.data).toHaveProperty('count', expect.any(Number));
-      expect(response.body.data).toHaveProperty('rows', expect.any(Array));
-    });
-  });
-
-  describe('GET /movies - success with token and without query page', () => {
-    it('should return data in Object', async () => {
-      const response = await request(app).get('/pub/movies?page=2', { headers: { access_token: token } });
-      expect(response.status).toBe(200);
-      expect(response.body.data).toBeInstanceOf(Object);
-      expect(response.body.data).toHaveProperty('count', expect.any(Number));
-      expect(response.body.data).toHaveProperty('rows', expect.any(Array));
-    });
-  });
-
-  describe('GET /movies - success without token and with query page', () => {
-    it('should return data in Object', async () => {
-      const response = await request(app).get('/pub/movies?page=2');
-      expect(response.status).toBe(200);
-      expect(response.body.data).toBeInstanceOf(Object);
-      expect(response.body.data).toHaveProperty('count', expect.any(Number));
-      expect(response.body.data).toHaveProperty('rows', expect.any(Array));
-    });
-  });
-
-  describe('GET /movies - success get movie deatil with params id', () => {
-    it('should return data in Object', async () => {
-      const response = await request(app).get('/pub/movies/1');
-      expect(response.status).toBe(200);
-      expect(response.body).toHaveProperty('data', expect.any(Object));
-      expect(response.body).toHaveProperty('qr', expect.any(String));
-    });
-  });
-
-  describe('GET /movies - 404', () => {
-    it('should return data in Object', async () => {
-      const response = await request(app).get('/pub/movies/20');
+  // FETCH USER BY ID
+  describe('GET USER BY ID FAIL', () => {
+    it('output ====> 404', async () => {
+      const response = await request(app).get('/users/120001222');
       expect(response.status).toBe(404);
-      expect(response.body.error.message).toBe('Movie not found');
+    });
+  });
+  describe('POST FAIL /users/address - 201', () => {
+    it('output ====> Missing Token', async () => {
+      const response = await request(app).post('/users/address').send({
+        "name": "Rumah Haji Ali",
+        "street": "Jl. ABC No. 7",
+        "province": "DKI Jakarta",
+        "city": "Jakarta Selatan",
+        "provinceId": 32,
+        "cityId": 3275,
+        "default": true,
+        "UserId": 2
+      });
+      expect(response.status).toBe(401);
+      expect(response.body.message).toBe('Missing Token');
+    });
+  });
+  describe('POST SUCCESS /ADD USER ADDRESS - 201', () => {
+    it('output ====> Address has been successfully added.', async () => {
+      const response = await request(app).post('/users/address').send({
+        "name": "Rumah Haji Ali",
+        "street": "Jl. ABC No. 7",
+        "province": "DKI Jakarta",
+        "city": "Jakarta Selatan",
+        "provinceId": 32,
+        "cityId": 3275,
+        "default": true,
+        "UserId": 2
+      })
+      .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE2NjU0MjU0NzF9.Dki6ztRq1vrZjPOB9q-XA-SdF3ljt2A7tbPxqd3mPDg')
+      expect(response.status).toBe(201);
+      expect(response.body.message).toBe('Address has been successfully added.');
     });
   });
 });
-
-describe('/pub/bookmarks', () => {
-  describe('GET /pub/bookmarks ', () => {
-    test('200 Success get bookmarks', (done) => {
-      request(app)
-        .get('/pub/bookmarks')
-        .set('access_token', tokenUser)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(200);
-          expect(body.data).toBeInstanceOf(Object);
-          expect(body.data).toHaveProperty('count', expect.any(Number));
-          expect(body.data).toHaveProperty('rows', expect.any(Array));
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-  });
-  describe('POST /pub/bookmarks/:id - with access token', () => {
-    test('201 Success add bookmarks', (done) => {
-      request(app)
-        .post('/pub/bookmarks/2')
-        .set('access_token', tokenUser)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(201);
-          expect(body.message).toBe('NewBookmark hass been added');
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-  });
-
-  describe('POST /pub/bookmarks/:id - with access token', () => {
-    test('404 Movie not found', (done) => {
-      request(app)
-        .post('/pub/bookmarks/20')
-        .set('access_token', tokenUser)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(404);
-          expect(body.error.message).toBe('Movie not found');
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-  });
-
-  describe('GET /pub/bookmarks - without access token', () => {
-    test('401 Missing Token', (done) => {
-      request(app)
-        .get('/pub/bookmarks')
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(401);
-          expect(body.error.message).toBe('Missing Token');
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-  });
-
-  describe('GET /pub/bookmarks - with access token (admin/staff)', () => {
-    test('403 Forbidden', (done) => {
-      request(app)
-        .get('/pub/bookmarks')
-        .set('access_token', token)
-        .then((response) => {
-          const { body, status } = response;
-          expect(status).toBe(403);
-          expect(body.error.message).toBe('Forbidden');
-          done();
-        })
-        .catch((err) => {
-          done(err);
-        });
-    });
-  });
-});
-
-
-
 
