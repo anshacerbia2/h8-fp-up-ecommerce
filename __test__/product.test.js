@@ -1,6 +1,44 @@
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const request = require("supertest");
 const app = require("../app");
+const { Product } = require("../models");
+const { User } = require("../models");
+const { hashPw, jwtSign } = require("../helpers");
+
+let tokenAnsha;
+let tokenRyan;
+
+beforeAll(async () => {
+  // await User.bulkCreate(users);
+  // await Category.bulkCreate(categories);
+  // await SubCategory.bulkCreate(subCategories);
+  // await Product.bulkCreate(products);
+  // await Image.bulkCreate(images);
+  // await Address.bulkCreate(address);
+  const ansha = await User.findOne({
+    where: {
+      email: "sc.anshacerbia@gmail.com"
+    },
+  });
+  const anshaPayload = {
+    id:  ansha.id
+  }
+  tokenAnsha = jwtSign(anshaPayload, process.env.SECRET);
+  const ryan = await User.findOne({
+    where: {
+      email: "ryanhunter@mail.com"
+    }
+  });
+  const ryanPayload = {
+    id: ryan.id
+  }
+  tokenRyan = jwtSign(ryanPayload, process.env.SECRET);
+});
+
+beforeEach(() => {
+  jest.restoreAllMocks();
+});
+
 
 describe('PRODUCT ROUTES', () => {
   describe('GET SUCCESS - ALL PRODUCTS SUCCESS', () => {
@@ -51,7 +89,7 @@ describe('PRODUCT ROUTES', () => {
     it('output ====> Data product of user', async () => {
       const response = await request(app).get('/products/user')
       .set(
-        "access_token", process.env.TOKEN
+        "access_token", tokenAnsha
       )
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
@@ -79,7 +117,7 @@ describe('PRODUCT ROUTES', () => {
         "SubCategoryId": 2,
         "authorId": 2
       })
-      .set("access_token", process.env.TOKEN);
+      .set("access_token", tokenAnsha);
       // console.log(response.body);
       expect(response.status).toBe(400);
       expect(response.body.errors[0].message).toBe("Slug already in used.");
@@ -100,7 +138,7 @@ describe('PRODUCT ROUTES', () => {
         "SubCategoryId": 2,
         "authorId": 2
       })
-      .set("access_token", process.env.TOKEN);
+      .set("access_token", tokenAnsha);
       expect(response.status).toBe(201);
       expect(response.body.message).toBe("Product has been added successfully");
     });
@@ -126,7 +164,7 @@ describe('PRODUCT ROUTES', () => {
   });
   describe('PUT FAIL - PUT PRODUCT', () => {
     it('output ====> 401 Missing Token', async () => {
-      const response = await request(app).put('/products')
+      const response = await request(app).put('/products/1')
       .send({
         "name": "Tomat KW1",
         "slug": "tomat-kw1",
@@ -158,7 +196,7 @@ describe('PRODUCT ROUTES', () => {
         "SubCategoryId": 2,
         "authorId": 2
       })
-      .set('access_token', process.env.TOKEN);
+      .set('access_token', tokenAnsha);
       expect(response.body.error.message).toBe("Product not found");
     });
   });
@@ -184,8 +222,8 @@ describe('PRODUCT ROUTES', () => {
   // }); // NOT OK
   describe('DELETE SUCCESS -  DELETE SPESIFIC PRODUCT', () => {
     it('output ====> Product has been deleted successfully', async () => {
-      const response = await request(app).delete('/products/1')
-      .set('access_token', process.env.TOKEN)
+      const response = await request(app).delete('/products/2')
+      .set('access_token', tokenAnsha)
       expect(response.status).toBe(200);
       expect(response.body.message).toBe("Product has been deleted successfully");
     });
@@ -197,13 +235,31 @@ describe('PRODUCT ROUTES', () => {
   //     // expect(response.status).toBe(404);
   //     expect(response.body.error.message).toBe("Product not found");
   //   });
-  // }); // NOT OK
+  // Product.findAll
+  describe("GET PRODUCT FAIL", () => {
+    it("output ====> ERROR", async () => {
+      Product.findAll = jest.fn().mockRejectedValue("Error");
+      request(app)
+        .get("/products")
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.error).toBe("Error");
+        })
+    });
+  });  
   describe('DELETE FAIL -  DELETE SPESIFIC PRODUCT', () => {
     it('output ====> Missing Token', async () => {
       const response = await request(app).delete('/products/3')
-      console.log(response);
+      // console.log(response);
       expect(response.status).toBe(401);
       expect(response.body.message).toBe("Missing Token");
+    });
+  });
+  describe('DELETE FAIL -  DELETE SPESIFIC PRODUCT', () => {
+    it('output ====> FAIL UNAUTHORIZED', async () => {
+      const response = await request(app).delete('/products/2')
+      .set('access_token', tokenRyan)
+      expect(response.status).toBe(500);
     });
   });
 });

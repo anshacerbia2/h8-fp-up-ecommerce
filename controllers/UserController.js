@@ -23,6 +23,10 @@ class UserController {
           model: Address
         }
       });
+      if (!users) { 
+        response.status(404).json({'message': 'User not found'})
+        return;
+      }
       response.status(200).json(users);
     } catch (error) {
       next(error);

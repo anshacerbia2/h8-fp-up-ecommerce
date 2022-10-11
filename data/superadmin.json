@@ -10,13 +10,23 @@
     "role": "superadmin"
   },
   {
-    "fName": "Lana",
-    "lName": "Rhodes",
+    "fName": "Ryan",
+    "lName": "Utami",
     "avatar": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/7/31322233-5f86-4e10-b0e4-4e9064b9b89b.jpg",
-    "email": "lana@gmail.com",
+    "email": "ryanhunter@mail.com",
     "password": "123456",
     "phoneNumber": "+6281644446678",
-    "gender": "Perempuan",
+    "gender": "Laki",
     "role": "user"
+  },
+  {
+    "fName": "Haji ",
+    "lName": "Marjali",
+    "avatar": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/12/7/31322233-5f86-4e10-b0e4-4e9064b9b89b.jpg",
+    "email": "hajiali@mail.com",
+    "password": "123456",
+    "phoneNumber": "+6281644446678",
+    "gender": "Laki",
+    "role": "seller"
   }
 ]

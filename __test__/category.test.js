@@ -7,6 +7,15 @@ beforeEach(() => {
   jest.restoreAllMocks();
 });
 
+
+describe("GET SUCCESS CATEGORY", () => {
+  it("output ====> Data of Categories", async () => {
+    const response = await request(app).get("/categories");
+    expect(response.status).toBe(200);
+    expect(response.body).toBeInstanceOf(Array);
+  });
+});
+
 describe("GET CATEGORY FAIL", () => {
   it("output ====> ERROR", async () => {
     Category.findAll = jest.fn().mockRejectedValue("Error");
@@ -14,20 +23,8 @@ describe("GET CATEGORY FAIL", () => {
       .get("/categories")
       .then((res) => {
         expect(res.status).toBe(500);
-        expect(res.body).toBe("Error");
-        done();
+        expect(res.body.error).toBe("Error");
       })
-      .catch((err) => {
-        done(err);
-      });
-  });
-});
-
-describe("GET SUCCESS CATEGORY SUCCESS", () => {
-  it("output ====> Data of Categories", async () => {
-    const response = await request(app).get("/categories");
-    expect(response.status).toBe(200);
-    expect(response.body).toBeInstanceOf(Array);
   });
 });
 
@@ -47,15 +44,15 @@ describe("GET SUB CATEGORY SUCCESS", () => {
   });
 });
 
-describe("POST SUB CATEGORY SUCCESS", () => {
-  it("output ====> Sub Category has been added successfully", async () => {
-    const response = await request(app).post("/sub-categories").send({
-      name: "Sayur Hidroponik2",
-      CategoryId: 1,
-    });
-    expect(response.status).toBe(201);
-    expect(response.body.message).toBe(
-      "Sub Category has been added successfully"
-    );
-  });
-});
+// describe("POST SUB CATEGORY SUCCESS", () => {
+//   it("output ====> Sub Category has been added successfully", async () => {
+//     const response = await request(app).post("/sub-categories").send({
+//       name: "Sayur Hidroponik2",
+//       CategoryId: 2,
+//     });
+//     expect(response.status).toBe(201);
+//     expect(response.body.message).toBe(
+//       "Sub Category has been added successfully"
+//     );
+//   });
+// });
