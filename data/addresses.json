@@ -1,0 +1,22 @@
+[
+  {
+    "name": "Rumah Lana",
+    "street": "Jl. ABC No. 7",
+    "province": "DKI Jakarta",
+    "city": "Jakarta Selatan",
+    "provinceId": 32,
+    "cityId": 3275,
+    "default": true,
+    "UserId": 2
+  },
+  {
+    "name": "Rumah Ansha",
+    "street": "Jl. ABC No. 8",
+    "province": "DKI Jakarta",
+    "city": "Jakarta Selatan",
+    "cityId": 3275,
+    "provinceId": 32,
+    "default": true,
+    "UserId": 1
+  }
+]

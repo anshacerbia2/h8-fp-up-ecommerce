@@ -1,0 +1,54 @@
+[
+  {
+    "id": 1,
+    "name": "Tomat Super",
+    "slug": "tomat-super",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+    "price": 3000,
+    "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
+    "harvestDate": "2022-10-01 07:00:00+07",
+    "unit": "kg",
+    "stock": 100,
+    "SubCategoryId": 2,
+    "authorId": 2
+  },
+  {
+    "id": 2,
+    "name": "Jagun Super",
+    "slug": "jagung-super",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+    "price": 3500,
+    "mainImg": "https://media.istockphoto.com/photos/corn-cobs-picture-id1140204101?k=20&m=1140204101&s=612x612&w=0&h=kM0lbUOH6t5Advw8n7N5QdGqUerybOnOZg7gG6RaAxM=",
+    "harvestDate": "2022-10-01 07:00:00+07",
+    "unit": "kg",
+    "stock": 167,
+    "SubCategoryId": 5,
+    "authorId": 1
+  },
+  {
+    "id": 3,
+    "name": "Kentang Super",
+    "slug": "kentang-super",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+    "price": 13500,
+    "mainImg": "https://media.istockphoto.com/photos/raw-potatoes-with-slices-picture-id496359598?k=20&m=496359598&s=612x612&w=0&h=EPxjuRWso6eCZfSxybd9AuNTvPsA9UIqgZ9CydmTUv8=",
+    "harvestDate": "2022-10-01 07:00:00+07",
+    "unit": "kg",
+    "stock": 120,
+    "SubCategoryId": 7,
+    "authorId": 1
+  },
+  {
+    "id": 4,
+    "name": "Paprika Kuning Super",
+    "slug": "paprika-kuning-super",
+    "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.\n\n Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+    "price": 55500,
+    "mainImg": "https://media.istockphoto.com/photos/yellow-pepper-closeup-on-a-white-isolated-picture-id1209897489?k=20&m=1209897489&s=612x612&w=0&h=hHnhxOWqGUMRygysrtbmk5fyzNTfvMt3Oarq9vumIHs=",
+    "harvestDate": "2022-10-01 07:00:00+07",
+    "unit": "kg",
+    "stock": 120,
+    "SubCategoryId": 7,
+    "authorId": 2
+  }
+]

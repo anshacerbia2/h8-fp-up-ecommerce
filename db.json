@@ -1,0 +1,143 @@
+{
+  "Products": [
+    {
+      "id": 1,
+      "name": "Tomat Lembang",
+      "slug": "tomat-lembang",
+      "mainImg": "https://cdn.medcom.id/images/content/2020/10/08/1196942/3Rw1PQrlYn.jpeg",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+      "unit": "kg",
+      "stock": 100,
+      "price": 20000,
+      "harvestDate": "2022-10-01 07:00:00+07",
+      "SubCategoryId": 1
+    },
+    {
+      "id": 2,
+      "name": "Tomat Lembang",
+      "slug": "tomat-lembang",
+      "mainImg": "https://cdn.medcom.id/images/content/2020/10/08/1196942/3Rw1PQrlYn.jpeg",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+      "unit": "kg",
+      "stock": 100,
+      "price": 20000,
+      "harvestDate": "2022-10-01 07:00:00+07",
+      "SubCategoryId": 1
+    },
+    {
+      "id": 3,
+      "name": "Tomat Lembang",
+      "slug": "tomat-lembang",
+      "mainImg": "https://cdn.medcom.id/images/content/2020/10/08/1196942/3Rw1PQrlYn.jpeg",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+      "unit": "kg",
+      "stock": 100,
+      "price": 20000,
+      "harvestDate": "2022-10-01 07:00:00+07",
+      "SubCategoryId": 1
+    },
+    {
+      "id": 4,
+      "name": "Tomat Lembang",
+      "slug": "tomat-lembang",
+      "mainImg": "https://cdn.medcom.id/images/content/2020/10/08/1196942/3Rw1PQrlYn.jpeg",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+      "unit": "kg",
+      "stock": 100,
+      "price": 20000,
+      "harvestDate": "2022-10-01 07:00:00+07",
+      "SubCategoryId": 1
+    },
+    {
+      "id": 5,
+      "name": "Tomat Lembang",
+      "slug": "tomat-lembang",
+      "mainImg": "https://cdn.medcom.id/images/content/2020/10/08/1196942/3Rw1PQrlYn.jpeg",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+      "unit": "kg",
+      "stock": 100,
+      "price": 20000,
+      "harvestDate": "2022-10-01 07:00:00+07",
+      "SubCategoryId": 1
+    },
+    {
+      "id": 6,
+      "name": "Tomat Lembang",
+      "slug": "tomat-lembang",
+      "mainImg": "https://cdn.medcom.id/images/content/2020/10/08/1196942/3Rw1PQrlYn.jpeg",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+      "unit": "kg",
+      "stock": 100,
+      "price": 20000,
+      "harvestDate": "2022-10-01 07:00:00+07",
+      "SubCategoryId": 1
+    },
+    {
+      "name": "Tomat Lembang",
+      "slug": "tomat-lembang",
+      "mainImg": "https://cdn.medcom.id/images/content/2020/10/08/1196942/3Rw1PQrlYn.jpeg",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+      "unit": "kg",
+      "stock": 100,
+      "price": 20000,
+      "harvestDate": "2022-10-01 07:00:00+07",
+      "SubCategoryId": 1
+    },
+    {
+      "id": 7,
+      "name": "Tomat Lembang",
+      "slug": "tomat-lembang",
+      "mainImg": "https://cdn.medcom.id/images/content/2020/10/08/1196942/3Rw1PQrlYn.jpeg",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+      "unit": "kg",
+      "stock": 100,
+      "price": 20000,
+      "harvestDate": "2022-10-01 07:00:00+07",
+      "SubCategoryId": 1
+    },
+    {
+      "id": 8,
+      "name": "Tomat Lembang",
+      "slug": "tomat-lembang",
+      "mainImg": "https://cdn.medcom.id/images/content/2020/10/08/1196942/3Rw1PQrlYn.jpeg",
+      "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+      "unit": "kg",
+      "stock": 100,
+      "price": 20000,
+      "harvestDate": "2022-10-01 07:00:00+07",
+      "SubCategoryId": 1
+    }
+  ],
+  "Category": [
+    {
+      "id": 1,
+      "name": "Pangan"
+    },
+    {
+      "id": 2,
+      "name": "Hortikultura"
+    }
+  ],
+  "SubCategory": [
+    {
+      "id": 1,
+      "name": "Beras",
+      "CategoryId": 1
+    },
+    {
+      "id": 2,
+      "name": "Jagung",
+      "CategoryId": 1
+    },
+    {
+      "id": 3,
+      "name": "Kentang",
+      "CategoryId": 1
+    },
+    {
+      "id": 4,
+      "name": "Tomat",
+      "CategoryId": 2
+    }
+  ]
+}
