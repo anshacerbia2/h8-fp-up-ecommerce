@@ -13,6 +13,24 @@ class AuctionController {
       next(err)
     }
   }
+
+  static async approvedAuctionsById(req, res, next) {
+    try {
+      const { id } = req.params
+      const data = await Auction.findByPk(id, {
+        include: {
+          model: User,
+          attributes: {
+            exclude: ['password']
+          }
+        }
+      })
+      if (!data) throw { status: 404, message: 'Item not found.' }
+      res.status(200).json(data);
+    } catch (err) {
+      next(err)
+    }
+  }
   // static async adminReadAuction(req, res, next) {
   //   try {
   //     const data = await Auction.findAll({
