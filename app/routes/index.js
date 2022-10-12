@@ -5,6 +5,7 @@ const subCategoryRoutes = require('./subcategory');
 const productRoutes = require('./product');
 const addressRoutes = require('./address');
 const cartRoutes = require('./cart');
+const auctionRoutes = require('./auction');
 const MidtransController = require('../controllers/MidtransController');
 
 router.use(addressRoutes);
@@ -13,6 +14,7 @@ router.post('/notification', MidtransController.notification);
 router.use('/categories', categoryRoutes);
 router.use('/sub-categories', subCategoryRoutes);
 router.use('/products', productRoutes);
-router.use('/cart', cartRoutes)
+router.use('/cart', cartRoutes);
+router.use('/auctions', auctionRoutes);
 
 module.exports = router;
