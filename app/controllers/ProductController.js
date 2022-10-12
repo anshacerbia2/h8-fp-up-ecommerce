@@ -24,10 +24,6 @@ class ProductController {
             },
           },
           {
-            model: Image,
-            attributes: ["id", "imgUrl"],
-          },
-          {
             model: User,
             attributes: { exclude: ["password", "createdAt", "updatedAt"] },
           },
@@ -59,10 +55,6 @@ class ProductController {
               model: Category,
               attributes: ["id", "name"],
             },
-          },
-          {
-            model: Image,
-            attributes: ["id", "productId", "imgUrl"],
           },
           {
             model: User,
@@ -115,10 +107,6 @@ class ProductController {
             },
           },
           {
-            model: Image,
-            attributes: ["id", "imgUrl"],
-          },
-          {
             model: User,
             attributes: { exclude: ["password", "createdAt", "updatedAt"] },
           },
@@ -147,10 +135,6 @@ class ProductController {
             },
           },
           {
-            model: Image,
-            attributes: ["id", "imgUrl"],
-          },
-          {
             model: User,
             attributes: { exclude: ["password", "createdAt", "updatedAt"] },
           },
@@ -165,7 +149,6 @@ class ProductController {
   }
 
   static async createProduct(request, response, next) {
-    const t = await sequelize.transaction();
     try {
       const { id: authorId } = request.user;
       const {
@@ -196,23 +179,10 @@ class ProductController {
           SubCategoryId,
           authorId,
         },
-        { transaction: t }
       );
-
-      if (image1 || image2 || image3) {
-        const images = [image1, image2, image3].filter((v) => v.imgUrl);
-        if (images.length) {
-          images.forEach((v) => (v.productId = newProduct.id));
-          await Image.bulkCreate(images, { transaction: t });
-        }
-      }
-      await t.commit();
-      response
-        .status(201)
-        .json({ message: "Product has been added successfully" });
+      response.status(201).json({ message: "Product has been added successfully" });
     } catch (error) {
       console.log(error);
-      await t.rollback();
       next(error);
     }
   }
@@ -249,29 +219,6 @@ class ProductController {
         },
         { where: { id: { [Op.eq]: productId } }, transaction: t }
       );
-
-      let deletedImg = [image1, image2, image3].filter(
-        (v) => !v.imgUrl && v.id
-      );
-      deletedImg = deletedImg.map((v) => v.id);
-      let newImages = [image1, image2, image3].filter((v) => v.imgUrl);
-      newImages.forEach((v) => (v.productId = productId));
-
-      if (newImages.length)
-        await Image.bulkCreate(newImages, {
-          updateOnDuplicate: ["imgUrl"],
-          transaction: t,
-        });
-
-      if (deletedImg.length) {
-        await Image.destroy({
-          where: {
-            id: { [Op.in]: deletedImg },
-          },
-        }),
-          { transaction: t };
-      }
-
       await t.commit();
       response
         .status(200)
@@ -287,9 +234,7 @@ class ProductController {
     try {
       const { id: productId } = request.params;
       await Product.destroy({ where: { id: { [Op.eq]: productId } } });
-      response
-        .status(200)
-        .json({ message: "Product has been deleted successfully" });
+      response.status(200).json({ message: "Product has been deleted successfully" });
     } catch (error) {
       next(error);
     }

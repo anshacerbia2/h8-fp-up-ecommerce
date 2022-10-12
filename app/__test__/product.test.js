@@ -22,7 +22,8 @@ beforeAll(async () => {
     },
   });
   const anshaPayload = {
-    id:  ansha.id
+    id: ansha.id,
+    role: ansha.role
   }
   tokenAnsha = jwtSign(anshaPayload, process.env.SECRET);
   const ryan = await User.findOne({
@@ -31,7 +32,8 @@ beforeAll(async () => {
     }
   });
   const ryanPayload = {
-    id: ryan.id
+    id: ryan.id,
+    role: ryan.role
   }
   tokenRyan = jwtSign(ryanPayload, process.env.SECRET);
   const hajiali = await User.findOne({
@@ -40,7 +42,8 @@ beforeAll(async () => {
     }
   })
   const hajiAliPayload = {
-    id: hajiali.id
+    id: hajiali.id,
+    role: hajiali.role
   }
   tokenHajiAli = jwtSign(hajiAliPayload, process.env.SECRET)
 });
@@ -105,9 +108,9 @@ describe('PRODUCT ROUTES', () => {
   describe('GET SUCCESS - FETCH PRODUCT BASED ON USER', () => {
     it('output ====> Data product of user', async () => {
       const response = await request(app).get('/products/user')
-      .set(
-        "access_token", tokenAnsha
-      )
+        .set(
+          "access_token", tokenAnsha
+        )
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
     });
@@ -122,19 +125,19 @@ describe('PRODUCT ROUTES', () => {
   describe('POST FAIL - CREATE PRODUCT', () => {
     it('output ====> 400 Slug Already Use Create Product', async () => {
       const response = await request(app).post('/products')
-      .send({
-        "name": "Tomat Super",
-        "slug": "tomat-super",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
-        "price": 3000,
-        "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
-        "harvestDate": "2022-10-01 07:00:00+07",
-        "unit": "kg",
-        "stock": 100,
-        "SubCategoryId": 2,
-        "authorId": 2
-      })
-      .set("access_token", tokenAnsha);
+        .send({
+          "name": "Tomat Super",
+          "slug": "tomat-super",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+          "price": 3000,
+          "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
+          "harvestDate": "2022-10-01 07:00:00+07",
+          "unit": "kg",
+          "stock": 100,
+          "SubCategoryId": 2,
+          "authorId": 2
+        })
+        .set("access_token", tokenAnsha);
       // console.log(response.body);
       expect(response.status).toBe(400);
       expect(response.body.errors[0].message).toBe("Slug already in used.");
@@ -143,19 +146,19 @@ describe('PRODUCT ROUTES', () => {
   describe('POST SUCCESS - CREATE PRODUCT', () => {
     it('output ====> Product has been created successfully', async () => {
       const response = await request(app).post('/products')
-      .send({
-        "name": "Cabe Super",
-        "slug": "cabe-super",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est.",
-        "price": 4000,
-        "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
-        "harvestDate": "2022-10-01 07:00:00+07",
-        "unit": "kg",
-        "stock": 100,
-        "SubCategoryId": 2,
-        "authorId": 1
-      })
-      .set("access_token", tokenAnsha);
+        .send({
+          "name": "Cabe Super",
+          "slug": "cabe-super",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est.",
+          "price": 4000,
+          "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
+          "harvestDate": "2022-10-01 07:00:00+07",
+          "unit": "kg",
+          "stock": 100,
+          "SubCategoryId": 2,
+          "authorId": 1
+        })
+        .set("access_token", tokenAnsha);
       expect(response.status).toBe(201);
       expect(response.body.message).toBe("Product has been added successfully");
     });
@@ -163,37 +166,58 @@ describe('PRODUCT ROUTES', () => {
   describe('POST FAIL - CREATE PRODUCT', () => {
     it('output ====> 401 Missing Token', async () => {
       const response = await request(app).post('/products')
-      .send({
-        "name": "Tomat KW1",
-        "slug": "tomat-kw1",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
-        "price": 300,
-        "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
-        "harvestDate": "2022-10-01 07:00:00+07",
-        "unit": "kg",
-        "stock": 100,
-        "SubCategoryId": 2,
-        "authorId": 2
-      })
+        .send({
+          "name": "Tomat KW1",
+          "slug": "tomat-kw1",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+          "price": 300,
+          "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
+          "harvestDate": "2022-10-01 07:00:00+07",
+          "unit": "kg",
+          "stock": 100,
+          "SubCategoryId": 2,
+          "authorId": 2
+        })
       expect(response.status).toBe(401);
       expect(response.body.message).toBe("Missing Token");
     });
   });
+  describe('PUT SUCCESS - PUT PRODUCT', () => {
+    it('output ====> Product has been updated successfully', async () => {
+      const response = await request(app).put('/products/1')
+        .send({
+          "name": "Tomat KW1",
+          "slug": "tomat-kw1",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+          "price": 300,
+          "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
+          "harvestDate": "2022-10-01 07:00:00+07",
+          "unit": "kg",
+          "stock": 100,
+          "SubCategoryId": 2,
+          "authorId": 2
+        })
+        .set("access_token", tokenHajiAli)
+      console.log(response.body, "respondse")
+      expect(response.status).toBe(200)
+      expect(response.body.message).toBe("Product has been updated successfully")
+    })
+  })
   describe('PUT FAIL - PUT PRODUCT', () => {
     it('output ====> 401 Missing Token', async () => {
       const response = await request(app).put('/products/1')
-      .send({
-        "name": "Tomat KW1",
-        "slug": "tomat-kw1",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
-        "price": 300,
-        "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
-        "harvestDate": "2022-10-01 07:00:00+07",
-        "unit": "kg",
-        "stock": 100,
-        "SubCategoryId": 2,
-        "authorId": 2
-      })
+        .send({
+          "name": "Tomat KW1",
+          "slug": "tomat-kw1",
+          "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+          "price": 300,
+          "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
+          "harvestDate": "2022-10-01 07:00:00+07",
+          "unit": "kg",
+          "stock": 100,
+          "SubCategoryId": 2,
+          "authorId": 2
+        })
       expect(response.status).toBe(401);
       expect(response.body.message).toBe("Missing Token");
     });
@@ -220,7 +244,7 @@ describe('PRODUCT ROUTES', () => {
   describe('DELETE SUCCESS -  DELETE SPESIFIC PRODUCT', () => {
     it('output ====> Product has been deleted successfully', async () => {
       const response = await request(app).delete('/products/3')
-      .set('access_token', tokenAnsha)
+        .set('access_token', tokenAnsha)
       expect(response.status).toBe(200);
       expect(response.body.message).toBe("Product has been deleted successfully");
     });
@@ -237,7 +261,7 @@ describe('PRODUCT ROUTES', () => {
   describe('DELETE FAIL -  DELETE SPESIFIC PRODUCT', () => {
     it('output ====> FAIL UNAUTHORIZED', async () => {
       const response = await request(app).delete('/products/2')
-      .set('access_token', tokenHajiAli)
+        .set('access_token', tokenHajiAli)
       expect(response.status).toBe(403);
     });
   });
@@ -254,10 +278,10 @@ describe('PRODUCT ROUTES', () => {
           done()
         })
     });
-  });  
+  });
   describe("GET PRODUCT FAIL LATEST", () => {
     it("output ====> ERROR", (done) => {
-      jest.spyOn(Product, "findAll").mockRejectedValue("Error"); 
+      jest.spyOn(Product, "findAll").mockRejectedValue("Error");
       // Product.findAll = jest.fn().mockRejectedValue("Error");
       request(app)
         .get("/products/latest")
@@ -267,5 +291,5 @@ describe('PRODUCT ROUTES', () => {
           done();
         })
     });
-  }); 
+  });
 });
