@@ -77,6 +77,19 @@ class AuctionController {
     }
   }
 
+  static async updateBid(req, res, next) {
+    try {
+      const { id } = req.params
+      const { lastBidPrice } = req.body;
+      await Auction.update({ lastBidPrice }, { where: { id } })
+      res.status(200).json({
+        message: `Update Bid Done`
+      })
+    } catch (err) {
+      next(err)
+    }
+  }
+
   static async unapprovedAuctions(req, res, next) {
     try {
       const data = await Auction.findAll({
