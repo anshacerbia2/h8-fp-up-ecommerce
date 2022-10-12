@@ -19,73 +19,41 @@ const products = require("../data/products.json");
 const images = require("../data/images.json");
 const { hashPw, jwtSign } = require("../helpers");
 
-export let tokenAnsha;
-export let tokenRyan;
-// const ansha = {
-//   email: "sc.anshacerbia@gmail.com",
-//   password: "123456"
-// };
-// const ryan = {
-//   email: "ryanx@mail.com",
-//   password: "123456"
-// };
+let tokenAnsha;
+let tokenRyan;
 
-// beforeAll(async () => {
-//   // await User.bulkCreate(users);
-//   // await Category.bulkCreate(categories);
-//   // await SubCategory.bulkCreate(subCategories);
-//   // await Product.bulkCreate(products);
-//   // await Image.bulkCreate(images);
-//   // await Address.bulkCreate(address);
-//   const ansha = await User.findOne({
-//     where: {
-//       email: "sc.anshacerbia@gmail.com"
-//     },
-//   });
-//   const anshaPayload = {
-//     id:  ansha.id
-//   }
-//   const createTokenAnsha = jwtSign(anshaPayload, process.env.SECRET);
-//   const ryan = await User.findOne({
-//     where: {
-//       email: "ryanx@mail.com"
-//     }
-//   });
-//   tokenAnsha = crea
-//   const ryanPayload = {
-//     id: ryan.id
-//   }
-//   const createTokenAnsha = jwtSign(ryanPayload, process.env.SECRET);
-// });
-
-// afterAll(async () => {
-//   await User.destroy({
-//     truncate: true,
-//     restartIdentity: true,
-//     cascade: true,
-//   });
-//   // await Category.destroy({
-//   //   truncate: true,
-//   //   restartIdentity: true,
-//   //   cascade: true,
-//   // });
-//   // await SubCategory.destroy({
-//   //   truncate: true,
-//   //   restartIdentity: true,
-//   //   cascade: true,
-//   // });
-//   // await Product.destroy({
-//   //   truncate: true,
-//   //   restartIdentity: true,
-//   //   cascade: true,
-//   // });
-// });
+beforeAll(async () => {
+  // await User.bulkCreate(users);
+  // await Category.bulkCreate(categories);
+  // await SubCategory.bulkCreate(subCategories);
+  // await Product.bulkCreate(products);
+  // await Image.bulkCreate(images);
+  // await Address.bulkCreate(address);
+  const ansha = await User.findOne({
+    where: {
+      email: "sc.anshacerbia@gmail.com"
+    },
+  });
+  const anshaPayload = {
+    id:  ansha.id
+  }
+  tokenAnsha = jwtSign(anshaPayload, process.env.SECRET);
+  const ryan = await User.findOne({
+    where: {
+      email: "ryanx@mail.com"
+    }
+  });
+  const ryanPayload = {
+    id: ryan.id
+  }
+  tokenRyan = jwtSign(ryanPayload, process.env.SECRET);
+});
 
 describe("USER ROUTES", () => {
   describe("POST SUCCESS /login - 200", () => {
     it("output ====> ACCESS_TOKEN", async () => {
       const response = await request(app).post("/login").send({
-        email: "hajiali@gmail.com",
+        email: "sc.anshacerbia@gmail.com",
         password: "123456",
       });
       expect(response.status).toBe(200);
@@ -169,7 +137,7 @@ describe("USER ROUTES", () => {
       expect(response.body.errors[0].message).toBe('Last Name is required.');
     });
   });
-  // FETCH USER
+  // // FETCH USER
   describe('GET USER SUCCESS', () => {
     it('output ====> ', async () => {
       const response = await request(app).get('/users');
@@ -178,7 +146,7 @@ describe("USER ROUTES", () => {
       expect(response.body).toBeInstanceOf(Array);
     });
   });
-  // FETCH USER BY ID
+  // // FETCH USER BY ID
   describe('GET USER SUCCESS', () => {
     it('output ====> 200', async () => {
       const response = await request(app).get('/users/1');
@@ -190,7 +158,8 @@ describe("USER ROUTES", () => {
   // FETCH USER BY ID
   describe('GET USER BY ID FAIL', () => {
     it('output ====> 404', async () => {
-      const response = await request(app).get('/users/120001222');
+      const response = await request(app).get('/users/1200');
+      console.log(response);
       expect(response.status).toBe(404);
     });
   });
@@ -222,7 +191,7 @@ describe("USER ROUTES", () => {
         "default": true,
         "UserId": 2
       })
-      .set('access_token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE2NjU0MjU0NzF9.Dki6ztRq1vrZjPOB9q-XA-SdF3ljt2A7tbPxqd3mPDg')
+      .set('access_token', tokenAnsha)
       expect(response.status).toBe(201);
       expect(response.body.message).toBe('Address has been successfully added.');
     });

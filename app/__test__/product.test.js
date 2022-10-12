@@ -1,11 +1,66 @@
 if (process.env.NODE_ENV !== "production") require("dotenv").config();
 const request = require("supertest");
 const app = require("../app");
+const { Product } = require("../models");
+const { User } = require("../models");
+const { hashPw, jwtSign } = require("../helpers");
+
+let tokenAnsha;
+let tokenRyan;
+let tokenHajiAli;
+
+beforeAll(async () => {
+  // await User.bulkCreate(users);
+  // await Category.bulkCreate(categories);
+  // await SubCategory.bulkCreate(subCategories);
+  // await Product.bulkCreate(products);
+  // await Image.bulkCreate(images);
+  // await Address.bulkCreate(address);
+  const ansha = await User.findOne({
+    where: {
+      email: "sc.anshacerbia@gmail.com"
+    },
+  });
+  const anshaPayload = {
+    id:  ansha.id
+  }
+  tokenAnsha = jwtSign(anshaPayload, process.env.SECRET);
+  const ryan = await User.findOne({
+    where: {
+      email: "ryanx@mail.com"
+    }
+  });
+  const ryanPayload = {
+    id: ryan.id
+  }
+  tokenRyan = jwtSign(ryanPayload, process.env.SECRET);
+  const hajiali = await User.findOne({
+    where: {
+      email: "hajiali@gmail.com"
+    }
+  })
+  const hajiAliPayload = {
+    id: hajiali.id
+  }
+  tokenHajiAli = jwtSign(hajiAliPayload, process.env.SECRET)
+});
+
+beforeEach(() => {
+  jest.restoreAllMocks();
+});
+
 
 describe('PRODUCT ROUTES', () => {
   describe('GET SUCCESS - ALL PRODUCTS SUCCESS', () => {
     it('output ====> Array of Object - Category Products  ', async () => {
       const response = await request(app).get('/products');
+      expect(response.status).toBe(200);
+      expect(response.body).toBeInstanceOf(Array);
+    });
+  });
+  describe('GET SUCCESS - ALL LATEST PRODUCTS', () => {
+    it('output ====> Array of Object - Category Products  ', async () => {
+      const response = await request(app).get('/products/latest');
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
     });
@@ -51,7 +106,7 @@ describe('PRODUCT ROUTES', () => {
     it('output ====> Data product of user', async () => {
       const response = await request(app).get('/products/user')
       .set(
-        "access_token", process.env.TOKEN
+        "access_token", tokenAnsha
       )
       expect(response.status).toBe(200);
       expect(response.body).toBeInstanceOf(Array);
@@ -79,8 +134,8 @@ describe('PRODUCT ROUTES', () => {
         "SubCategoryId": 2,
         "authorId": 2
       })
-      .set("access_token", process.env.TOKEN);
-      console.log(response.body);
+      .set("access_token", tokenAnsha);
+      // console.log(response.body);
       expect(response.status).toBe(400);
       expect(response.body.errors[0].message).toBe("Slug already in used.");
     });
@@ -89,18 +144,18 @@ describe('PRODUCT ROUTES', () => {
     it('output ====> Product has been created successfully', async () => {
       const response = await request(app).post('/products')
       .send({
-        "name": "Tomat KW1",
-        "slug": "tomat-kw1",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
-        "price": 300,
+        "name": "Cabe Super",
+        "slug": "cabe-super",
+        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est.",
+        "price": 4000,
         "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
         "harvestDate": "2022-10-01 07:00:00+07",
         "unit": "kg",
         "stock": 100,
         "SubCategoryId": 2,
-        "authorId": 2
+        "authorId": 1
       })
-      .set("access_token", process.env.TOKEN);
+      .set("access_token", tokenAnsha);
       expect(response.status).toBe(201);
       expect(response.body.message).toBe("Product has been added successfully");
     });
@@ -126,7 +181,7 @@ describe('PRODUCT ROUTES', () => {
   });
   describe('PUT FAIL - PUT PRODUCT', () => {
     it('output ====> 401 Missing Token', async () => {
-      const response = await request(app).put('/products')
+      const response = await request(app).put('/products/1')
       .send({
         "name": "Tomat KW1",
         "slug": "tomat-kw1",
@@ -143,67 +198,74 @@ describe('PRODUCT ROUTES', () => {
       expect(response.body.message).toBe("Missing Token");
     });
   });
-  describe('PUT FAIL - PUT PRODUCT', () => {
-    it('output ====> Product not found', async () => {
-      const response = await request(app).put('/products/1221112')
-      .send({
-        "name": "Tomat KW1131",
-        "slug": "tomat-KW1131",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
-        "price": 300,
-        "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
-        "harvestDate": "2022-10-01 07:00:00+07",
-        "unit": "kg",
-        "stock": 100,
-        "SubCategoryId": 2,
-        "authorId": 2
-      })
-      .set('access_token', process.env.TOKEN);
-      expect(response.body.error.message).toBe("Product not found");
-    });
-  });
-  describe('PUT SUCCESS -  PUT UPDATE PRODUCT', () => {
-    it.skip('output ====> Product has been updated successfull', async () => {
-      const response = await request(app).put('/products/1')
-      .send({
-        "name": "Tomat KW1131",
-        "slug": "tomat-KW1131",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
-        "price": 300,
-        "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
-        "harvestDate": "2022-10-01 07:00:00+07",
-        "unit": "kg",
-        "stock": 100,
-        "SubCategoryId": 2,
-        "authorId": 2
-      })
-      .set('access_token', process.env.TOKEN)
-      expect(response.status).toBe(200);
-      expect(response.body.message).toBe("Product has been updated successfully");
-    });
-  }); // NOT OK
+  // describe('PUT FAIL - PUT PRODUCT', () => {
+  //   it('output ====> Product not found', async () => {
+  //     const response = await request(app).put('/products/1221112')
+  //     .send({
+  //       "name": "Tomat KW1131",
+  //       "slug": "tomat-KW1131",
+  //       "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
+  //       "price": 300,
+  //       "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
+  //       "harvestDate": "2022-10-01 07:00:00+07",
+  //       "unit": "kg",
+  //       "stock": 100,
+  //       "SubCategoryId": 2,
+  //       "authorId": 2
+  //     })
+  //     .set('access_token', tokenAnsha);
+  //     expect(response.body.error.message).toBe("Product not found");
+  //   });
+  // });
   describe('DELETE SUCCESS -  DELETE SPESIFIC PRODUCT', () => {
     it('output ====> Product has been deleted successfully', async () => {
-      const response = await request(app).delete('/products/1')
-      .set('access_token', process.env.TOKEN)
+      const response = await request(app).delete('/products/3')
+      .set('access_token', tokenAnsha)
       expect(response.status).toBe(200);
       expect(response.body.message).toBe("Product has been deleted successfully");
     });
   });
-  describe('DELETE FAIL -  DELETE SPESIFIC PRODUCT', () => {
-    it.skip('output ====> Product has been updated successfully', async () => {
-      const response = await request(app).delete('/products/1')
-      .set('access_token', process.env.TOKEN)
-      // expect(response.status).toBe(404);
-      expect(response.body.error.message).toBe("Product not found");
-    });
-  }); // NOT OK
+
   describe('DELETE FAIL -  DELETE SPESIFIC PRODUCT', () => {
     it('output ====> Missing Token', async () => {
       const response = await request(app).delete('/products/3')
-      console.log(response);
+      // console.log(response);
       expect(response.status).toBe(401);
       expect(response.body.message).toBe("Missing Token");
     });
   });
+  describe('DELETE FAIL -  DELETE SPESIFIC PRODUCT', () => {
+    it('output ====> FAIL UNAUTHORIZED', async () => {
+      const response = await request(app).delete('/products/2')
+      .set('access_token', tokenHajiAli)
+      expect(response.status).toBe(403);
+    });
+  });
+  // Product.findAll
+  describe("GET PRODUCT FAIL", () => {
+    it("output ====> ERROR", (done) => {
+      jest.spyOn(Product, 'findAll').mockRejectedValue('Error');
+      // Product.findAll = jest.fn().mockRejectedValue("Error");
+      request(app)
+        .get("/products")
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.error).toBe("Error");
+          done()
+        })
+    });
+  });  
+  describe("GET PRODUCT FAIL LATEST", () => {
+    it("output ====> ERROR", (done) => {
+      jest.spyOn(Product, "findAll").mockRejectedValue("Error"); 
+      // Product.findAll = jest.fn().mockRejectedValue("Error");
+      request(app)
+        .get("/products/latest")
+        .then((res) => {
+          expect(res.status).toBe(500);
+          expect(res.body.error).toBe("Error");
+          done();
+        })
+    });
+  }); 
 });

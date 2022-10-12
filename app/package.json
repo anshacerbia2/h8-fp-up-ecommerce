@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "jest --forceExit --runInBand --coverage",
+    "test": "jest --forceExit --runInBand --coverage --verbose --silent",
     "db_test": "npx sequelize db:drop --env test && npx sequelize db:create --env test && npx sequelize db:migrate:undo:all --env test && npx sequelize db:migrate --env test && npx sequelize db:seed:all --env test"
   },
   "keywords": [],
