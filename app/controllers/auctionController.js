@@ -58,7 +58,7 @@ class AuctionController {
       next(err)
     }
   }
-
+  // 
   static async unapprovedAuctions(req, res, next) {
     try {
       const data = await Auction.findAll({
