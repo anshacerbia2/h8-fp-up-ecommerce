@@ -9,10 +9,29 @@ function getCollections() {
     db = getDb()
     return db
 }
+async function deleteRooms() {
+    try {
+        getCollections()
+        rooms = db.collection('room')
+        await rooms.deleteMany({})
+    } catch (err) {
+        console.log(err)
+    }
+}
+async function deleteHistories() {
+    try {
+        getCollections()
+        histories = db.collection('history')
+        await histories.deleteMany({})
+    } catch (err) {
+        console.log(err)
+    }
+}
 class mongoAuctionController {
     static async getBidHistory(req, res, next) {
         try {
             let { roomId } = req.params
+            getCollections()
             histories = db.collection('history')
             let targetHistories = await histories.find({ roomId: ObjectId(roomId) }).toArray()
             res.status(200).json(targetHistories)
@@ -20,18 +39,31 @@ class mongoAuctionController {
             console.log(err)
         }
     }
+    static async postBid(bidData) {
+        try {
+            getCollections()
+            histories = db.collection('history')
+            let createHistory = await histories.insertOne(bidData)
+            return createHistory["insertedId"]
+        } catch (err) {
+            console.log(err)
+        }
+    }
     static async getBidRoom(req, res, next) {
         try {
+            // await deleteHistories()
+            // await deleteRooms()
             let { id } = req.params
             getCollections()
             rooms = db.collection('room');
             let targetRoom = await rooms.findOne({
-                autionProductId: id
+                auctionProductId: +id
                 // userIds: { $all: [+currentId, +targetId] } 
             })
             if (!targetRoom) {
+                console.log('target room gaada')
                 let roomInsertData = {
-                    auctionProductId: id
+                    auctionProductId: +id
                 }
                 // let roomInsertData = {
                 //     roomName: `${currentId}-${targetId}`,
@@ -58,3 +90,5 @@ class mongoAuctionController {
         }
     }
 }
+
+module.exports = mongoAuctionController

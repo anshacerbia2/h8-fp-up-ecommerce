@@ -28,103 +28,66 @@ let loggedInUserId = 0 //ntar ambil dari localStorage di tempelin ke socket.emit
 let targetId = 0
 let roomData = undefined
 io.on("connection", async (socket) => {
-
-    socket.emit("render-chat")
-    // socket.on("send-id", async (targetUserId, targetUserData, currentUserId, currentUserData) => {
-    //     try {
-    //         loggedInUserId = currentUserId
-    //         targetId = targetUserId
-    //         let { firstName: targetUserFirstName, lastName: targetUserLastName, profpic: targetUserProfpic } = targetUserData
-    //         let { firstName: currentUserFirstName, lastName: currentUserLastName, profpic: currentUserProfpic } = currentUserData
-    //         let targetRoom = await rooms.findOne({ userIds: { $all: [+loggedInUserId, +targetUserId] } })
-    //         if (!targetRoom) {
-    //             let roomInsertData = {
-    //                 roomName: `${loggedInUserId}-${targetUserId}`,
-    //                 userIds: [loggedInUserId, targetUserId],
-    //                 users: [
-    //                     { userId: loggedInUserId, name: `${currentUserFirstName} ${currentUserLastName}`, profpic: currentUserProfpic },
-    //                     { userId: targetUserId, name: `${targetUserFirstName} ${targetUserLastName}`, profpic: targetUserProfpic }
-    //                 ]
-    //             }
-    //             let createRoom = await rooms.insertOne(roomInsertData)
-    //             targetRoom = await rooms.findOne({ "_id": createRoom["insertedId"] })
-    //         }
-    //         let { roomName } = targetRoom
-    //         let roomId = targetRoom["_id"]
-    //         roomData = {
-    //             roomId,
-    //             roomName,
-    //         }
-    //         let { users } = targetRoom
-    //         users.forEach((el) => {
-    //             if (el.userId == loggedInUserId) {
-    //                 loggedInUserData = el
-    //             }
-    //         })
-    //         let chatHistory = await chats.find({ roomId }).toArray()
-    //         socket.join(roomData.roomName)
-    //     } catch (err) {
-    //         console.log(err)
-    //     }
-    // })
-    socket.on("send-id", async (targetUserId, currentUserId) => {
-        try {
-            targetId = +targetUserId
-            loggedInUserId = currentUserId
-        } catch (err) {
-            console.log(err)
-        }
-    })
-    socket.on("join-room", (payload) => {
-        console.log(payload, "asdhiasudhasuihdais")
-        socket.join(payload.roomName)
-    })
-    socket.on("send-chat", async (chat, name, senderId) => {
-        console.log(senderId, targetId)
-        let targetRoom = await rooms.findOne({ userIds: { $all: [+senderId, +targetId] } })
-        // console.log(targetRoom, "server app lane 84")
-        roomData = targetRoom
-        console.log(roomData, "room data line 87 server app")
-
-        let chatData = {
-            userId: senderId,
-            name,
-            message: chat,
-            roomId: roomData["_id"],
-        }
-        let chatInsertResponse = await chats.insertOne(chatData)
-        io.to(roomData.roomName).emit("send-chat", {
-            "_id": chatInsertResponse["insertedId"],
-            ...chatData
+    try {
+        socket.emit("render-chat")
+        socket.on("send-id", async (targetUserId, currentUserId) => {
+            try {
+                targetId = +targetUserId
+                loggedInUserId = currentUserId
+            } catch (err) {
+                console.log(err)
+            }
         })
-    })
-    // await chats.updateMany({ roomId: ObjectId("633fc9cdfd8f9b7645d52be9") }, { $set: { roomId: ObjectId("6343a10d76db83edd1a83f34") } })
-    // await rooms.deleteMany()
-    // await rooms.insertOne(
-    //     {
-    //         "roomName": "1-3",
-    //         "userIds": [
-    //             1,
-    //             3
-    //         ],
-    //         "users": [
-    //             {
-    //                 "userId": 3,
-    //                 "name": "Jonathan",
-    //                 "profpic": "https://cdn.discordapp.com/attachments/882091875589324836/1023414212824940594/Screenshot_2022-09-25-09-02-03-65_1c337646f29875672b5a61192b9010f9.jpg"
-    //             },
-    //             {
-    //                 "userId": 1,
-    //                 "name": "Ajat",
-    //                 "profpic": "https://cdn.discordapp.com/attachments/882091875589324836/1023414212824940594/Screenshot_2022-09-25-09-02-03-65_1c337646f29875672b5a61192b9010f9.jpg"
-    //             }
-    //         ]
-    //     }
-    // )
+        socket.on("join-room", (payload) => {
+            console.log(payload, "asdhiasudhasuihdais")
+            socket.join(payload.roomName)
+        })
+        socket.on("send-chat", async (chat, name, senderId) => {
+            console.log(senderId, targetId)
+            let targetRoom = await rooms.findOne({ userIds: { $all: [+senderId, +targetId] } })
+            // console.log(targetRoom, "server app lane 84")
+            roomData = targetRoom
+            console.log(roomData, "room data line 87 server app")
+
+            let chatData = {
+                userId: senderId,
+                name,
+                message: chat,
+                roomId: roomData["_id"],
+            }
+            let chatInsertResponse = await chats.insertOne(chatData)
+            io.to(roomData.roomName).emit("send-chat", {
+                "_id": chatInsertResponse["insertedId"],
+                ...chatData
+            })
+        })
+        // await chats.updateMany({ roomId: ObjectId("633fc9cdfd8f9b7645d52be9") }, { $set: { roomId: ObjectId("6343a10d76db83edd1a83f34") } })
+        // await rooms.deleteMany()
+        // await rooms.insertOne(
+        //     {
+        //         "roomName": "1-3",
+        //         "userIds": [
+        //             1,
+        //             3
+        //         ],
+        //         "users": [
+        //             {
+        //                 "userId": 3,
+        //                 "name": "Jonathan",
+        //                 "profpic": "https://cdn.discordapp.com/attachments/882091875589324836/1023414212824940594/Screenshot_2022-09-25-09-02-03-65_1c337646f29875672b5a61192b9010f9.jpg"
+        //             },
+        //             {
+        //                 "userId": 1,
+        //                 "name": "Ajat",
+        //                 "profpic": "https://cdn.discordapp.com/attachments/882091875589324836/1023414212824940594/Screenshot_2022-09-25-09-02-03-65_1c337646f29875672b5a61192b9010f9.jpg"
+        //             }
+        //         ]
+        //     }
+        // )
+    } catch (err) {
+        console.log(err)
+    }
 })
-
-// di sini nanti nge get dari database user biar lebih dinamis aj
-
 // await chats.insertMany(
 //     [
 //         {
