@@ -7,6 +7,7 @@ router.get('/', AuctionController.approvedAuctions);
 router.get('/pending', AuctionController.unapprovedAuctions);
 router.get('/archived', AuctionController.archivedAuctions);
 router.post('/', UserAuthentication, AuctionController.createAuction);
+router.get('/:id', UserAuthentication, AuctionController.approvedAuctionsById);
 router.patch('/:id', UserAuthentication, AuthorizationAuction, AuctionController.approveAuction);
 router.put('/:id', UserAuthentication, AuthorizationAuction, AuctionController.archiveAuction);
 
