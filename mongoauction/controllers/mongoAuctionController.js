@@ -33,7 +33,7 @@ class mongoAuctionController {
             let { roomId } = req.params
             getCollections()
             histories = db.collection('history')
-            let targetHistories = await histories.find({ roomId: ObjectId(roomId) }).toArray()
+            let targetHistories = await histories.find({ roomId: roomId }).toArray()
             res.status(200).json(targetHistories)
         } catch (err) {
             console.log(err)
