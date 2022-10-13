@@ -13,29 +13,29 @@
     "paymentStatus": null
   },
   {
-    "name": "Aglonema Pictu Tricolor",
+    "name": "Bonsai Mini",
     "imgUrl": "https://www.greenme.it/wp-content/uploads/2021/07/bonsai.jpg",
     "description": "SPESIFIKASI:\n\nYang di jual tanaman BIBIT, jumlah daun 2 buah, daun ukuran kecil, lebar daun 3 s.d 4 cm, asal tanaman dari pemisahan rumpun. Tinggi tanaman 6 cm s.d 8 cm. Tanaman sudah berakar sangat bagus.\n\nKARAKTERISTIK:\n\nTanaman ini adalah jenis tanaman AGLONEMA. Tanaman ini tidak merambat. Tinggi tanaman saat dewasa bisa mencapai 50 cm. Bentuk daun lonjong lancip dengan model daun tebal. Warna daun dominasi hijau mudah hijau tua dan putih. Warna batang tanaman hijau. Cara pengembang biakan cacah batang dan pemisahan rumpun.",
-    "initPrice": 300000,
-    "UserId": 2,
-    "status": "Unapproved",
-    "AuctionDate": "2022-8-06T00:00:00.000Z",
-    "AuctionDateEnd": "2022-9-06T:00:00.000Z",
-    "lastBidPrice": 2500000,
-    "lastBidUserId": 1,
-    "paymentStatus": "Pending"
-  },
-  {
-    "name": "Aglonema Pictu Tricolor",
-    "imgUrl": "https://agrozine.id/wp-content/uploads/2021/08/aglaonema-pictum-tricolor.jpeg",
-    "description": "Bonsai Ulmus mikro (Ulmus Parvifolia) cantik dan keren banget. Ukuran medium, harga termasuk pot keramik. Kondisi dan bentuk pohon bisa berubah sewaktu waktu karena faktor pertumbuhan, musim, dan lain2.",
     "initPrice": 500000,
     "UserId": 2,
-    "status": "Archived",
+    "status": "Unapproved",
     "AuctionDate": null,
     "AuctionDateEnd": null,
     "lastBidPrice": null,
     "lastBidUserId": null,
     "paymentStatus": null
+  },
+  {
+    "name": "Aglonema Pictu Tricolor",
+    "imgUrl": "https://agrozine.id/wp-content/uploads/2021/08/aglaonema-pictum-tricolor.jpeg",
+    "description": "Bonsai Ulmus mikro (Ulmus Parvifolia) cantik dan keren banget. Ukuran medium, harga termasuk pot keramik. Kondisi dan bentuk pohon bisa berubah sewaktu waktu karena faktor pertumbuhan, musim, dan lain2.",
+    "initPrice": 300000,
+    "UserId": 2,
+    "status": "Archived",
+    "AuctionDate": "2022-8-06T00:00:00.000Z",
+    "AuctionDateEnd": "2022-9-06T:00:00.000Z",
+    "lastBidPrice": 2500000,
+    "lastBidUserId": 1,
+    "paymentStatus": "Pending"
   }
 ]
