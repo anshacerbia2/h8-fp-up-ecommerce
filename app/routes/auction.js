@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const AuctionController = require('../controllers/auctionController');
+const AuctionController = require('../controllers/AuctionController');
 const AuthorizationAuction = require('../middlewares/authorizationAuction');
 const UserAuthentication = require('../middlewares/authentication');
 
