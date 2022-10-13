@@ -154,50 +154,52 @@ class MidtransController {
     try {
       let notificationJson = await coreApi.transaction.notification(request.body);
 
-      const order = await Order.findOne({ where: { order_id: notificationJson.order_id } })
-      await Order.update({
-        transaction_status: notificationJson.transaction_status,
-        transaction_time: notificationJson.transaction_time,
-        response: JSON.stringify(notificationJson)
-      }, { where: { order_id: notificationJson.order_id }, transaction: t });
-      console.log(order);
-      const orderItems = await OrderItem.findAll({
-        where: {
-          OrderId: order.id,
-        }
-      })
+      const order = await Order.findOne({ where: { order_id: notificationJson.order_id } });
 
-      const orderItemsProd = orderItems.map(v => {
-        return {
-          id: v.productId,
-          qty: v.quantity
-        }
-      })
+      if (notificationJson.transaction_status == 'settlement') {
+        await Order.update({
+          transaction_status: notificationJson.transaction_status,
+          transaction_time: notificationJson.transaction_time,
+          response: JSON.stringify(notificationJson)
+        }, { where: { order_id: notificationJson.order_id }, transaction: t });
 
-      const cartsArr = JSON.parse(order.carts);
-      const products = await Product.findAll();
+        const orderItems = await OrderItem.findAll({
+          where: {
+            OrderId: order.id,
+          }
+        })
 
-      const dataUpdate = [];
+        const orderItemsProd = orderItems.map(v => {
+          return {
+            id: v.productId,
+            qty: v.quantity
+          }
+        })
 
-      for (let i = 0; i < orderItemsProd.length; i++) {
-        for (let j = 0; j < products.length; j++) {
-          if (+products[j].id === +orderItemsProd[i].id) {
-            dataUpdate.push({ ...products[j].dataValues, id: products[j].dataValues.id, stock: (products[j].dataValues.stock - orderItemsProd[i].qty) });
+        const cartsArr = JSON.parse(order.carts);
+        const products = await Product.findAll();
+
+        const dataUpdate = [];
+
+        for (let i = 0; i < orderItemsProd.length; i++) {
+          for (let j = 0; j < products.length; j++) {
+            if (+products[j].id === +orderItemsProd[i].id) {
+              dataUpdate.push({ ...products[j].dataValues, id: products[j].dataValues.id, stock: (products[j].dataValues.stock - orderItemsProd[i].qty) });
+            }
           }
         }
+
+        await Product.bulkCreate(
+          dataUpdate,
+          {
+            updateOnDuplicate: ["stock"],
+            transaction: t
+          }
+        );
+
+        await Cart.destroy({ where: { id: cartsArr }, transaction: t });
+        await t.commit();
       }
-
-      await Product.bulkCreate(
-        dataUpdate,
-        {
-          updateOnDuplicate: ["stock"],
-          transaction: t
-        }
-      );
-
-      await Cart.destroy({ where: { id: cartsArr }, transaction: t });
-
-      await t.commit();
       response.status(200).json('OK');
     } catch (error) {
       console.log(error);

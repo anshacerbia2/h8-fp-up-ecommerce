@@ -209,7 +209,8 @@ class AuctionController {
       const { id } = req.user;
       const histories = await AuctionHistory.findAll({
         where: {
-          WinnerId: id
+          WinnerId: id,
+
         },
         include: [
           {
