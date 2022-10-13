@@ -55,8 +55,7 @@ class AuctionController {
     try {
       const { id } = req.params
       const d = new Date();
-      const dend = new Date();
-      dend.setMinutes(dend.getMinutes() + 10);
+      const dend = new Date(new Date().getTime() + 60 * 60 * 24 * 1000);
       await Auction.update({ status: 'Approved', AuctionDate: d, AuctionDateEnd: dend }, { where: { id } })
       res.status(200).json({
         message: `Updated Status`
