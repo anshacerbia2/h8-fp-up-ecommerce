@@ -55,7 +55,9 @@ class AuctionController {
     try {
       const { id } = req.params
       const d = new Date();
-      await Auction.update({ status: 'Approved', AuctionDate: d }, { where: { id } })
+      const dend = new Date();
+      dend.setMinutes(dend.getMinutes() + 2);
+      await Auction.update({ status: 'Approved', AuctionDate: d, AuctionDateEnd: dend }, { where: { id } })
       res.status(200).json({
         message: `Updated Status`
       })

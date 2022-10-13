@@ -22,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
     UserId: DataTypes.INTEGER,
     status: DataTypes.STRING,
     AuctionDate: DataTypes.DATE,
+    AuctionDateEnd: DataTypes.DATE,
     lastBidPrice: DataTypes.INTEGER,
     lastBidUserId: DataTypes.INTEGER,
     paymentStatus: DataTypes.STRING,
