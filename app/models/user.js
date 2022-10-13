@@ -15,6 +15,8 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Address);
       User.hasMany(models.Order);
       User.hasMany(models.Cart);
+      User.hasMany(models.AuctionHistory, { foreignKey: 'SellerId', as: `Seller` })
+      User.hasMany(models.AuctionHistory, { foreignKey: 'WinnerId', as: 'Winner' })
     }
   }
   User.init({
