@@ -1,5 +1,13 @@
-const { Address, User, Product, SubCategory, Category, Image, sequelize } = require('../models');
-const { Op } = require('sequelize');
+const {
+  Address,
+  User,
+  Product,
+  SubCategory,
+  Category,
+  Image,
+  sequelize,
+} = require("../models");
+const { Op } = require("sequelize");
 
 class ProductController {
   static async fetchProducts(request, response, next) {
@@ -9,28 +17,28 @@ class ProductController {
         include: [
           {
             model: SubCategory,
-            attributes: ['id', 'name'],
+            attributes: ["id", "name"],
             include: {
               model: Category,
-              attributes: ['id', 'name'],
-            }
+              attributes: ["id", "name"],
+            },
           },
           {
             model: Image,
-            attributes: ['id', 'imgUrl']
+            attributes: ["id", "imgUrl"],
           },
           {
             model: User,
-            attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
-          }
-        ]
-      }
+            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+          },
+        ],
+      };
       if (cat) {
         options.where = {
           SubCategoryId: {
-            [Op.eq]: cat
-          }
-        }
+            [Op.eq]: cat,
+          },
+        };
       }
       const products = await Product.findAll(options);
       response.status(200).json(products);
@@ -46,32 +54,50 @@ class ProductController {
         include: [
           {
             model: SubCategory,
-            attributes: ['id', 'name'],
+            attributes: ["id", "name"],
             include: {
               model: Category,
-              attributes: ['id', 'name'],
-            }
+              attributes: ["id", "name"],
+            },
           },
           {
             model: Image,
-            attributes: ['id', 'productId', 'imgUrl']
+            attributes: ["id", "productId", "imgUrl"],
           },
           {
             model: User,
-            attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
             include: {
               model: Address,
-              attributes: ['city'],
-              where: {
-                default: { [Op.eq]: true }
-              }
-            }
-          }
-        ]
+              attributes: ['city', 'cityId', 'default'],
+              // where: {
+              //   default: true
+              // }
+            },
+          },
+        ],
       });
-      if (!product) throw { status: 404, message: 'Product not found' };
+      if (!product) throw { status: 404, message: "Product not found" };
       response.status(200).json(product);
     } catch (error) {
+      next(error);
+    }
+  }
+
+  static async fetchProductByTitle(request, response, next) {
+    const { search } = request.body;
+    console.log(search);
+    try {
+      const data = await Product.findAll({
+        where: {
+          name: {
+            [Op.iLike]: `%${search}%`,
+          },
+        },
+      });
+      response.status(200).json(data);
+    } catch (error) {
+      console.log(error);
       next(error);
     }
   }
@@ -82,24 +108,55 @@ class ProductController {
         include: [
           {
             model: SubCategory,
-            attributes: ['id', 'name'],
+            attributes: ["id", "name"],
             include: {
               model: Category,
-              attributes: ['id', 'name'],
-            }
+              attributes: ["id", "name"],
+            },
           },
           {
             model: Image,
-            attributes: ['id', 'imgUrl']
+            attributes: ["id", "imgUrl"],
           },
           {
             model: User,
-            attributes: { exclude: ['password', 'createdAt', 'updatedAt'] }
-          }
+            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+          },
         ],
-        order: [['id', 'DESC']],
-        limit: 5
-      }
+        order: [["id", "DESC"]],
+        limit: 5,
+      };
+      const products = await Product.findAll(options);
+      response.status(200).json(products);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  static async fetchUserProducts(request, response, next) {
+    try {
+      const { id: userId } = request.user;
+      const options = {
+        include: [
+          {
+            model: SubCategory,
+            attributes: ["id", "name"],
+            include: {
+              model: Category,
+              attributes: ["id", "name"],
+            },
+          },
+          {
+            model: Image,
+            attributes: ["id", "imgUrl"],
+          },
+          {
+            model: User,
+            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+          },
+        ],
+        where: { authorId: { [Op.eq]: userId } },
+      };
       const products = await Product.findAll(options);
       response.status(200).json(products);
     } catch (error) {
@@ -111,17 +168,48 @@ class ProductController {
     const t = await sequelize.transaction();
     try {
       const { id: authorId } = request.user;
-      const { name, slug, description, price, mainImg, SubCategoryId, image1, image2, image3 } = request.body;
+      const {
+        name,
+        slug,
+        description,
+        price,
+        mainImg,
+        harvestDate,
+        unit,
+        stock,
+        SubCategoryId,
+        image1,
+        image2,
+        image3,
+      } = request.body;
 
-      const newProduct = await Product.create({ name, slug, description, price, mainImg, SubCategoryId, authorId }, { transaction: t });
+      const newProduct = await Product.create(
+        {
+          name,
+          slug,
+          description,
+          price,
+          mainImg,
+          harvestDate,
+          unit,
+          stock,
+          SubCategoryId,
+          authorId,
+        },
+        { transaction: t }
+      );
 
-      const images = [image1, image2, image3].filter(v => v.imgUrl);
-      if (images.length) {
-        images.forEach(v => v.productId = newProduct.id);
-        await Image.bulkCreate(images, { transaction: t });
+      if (image1 || image2 || image3) {
+        const images = [image1, image2, image3].filter((v) => v.imgUrl);
+        if (images.length) {
+          images.forEach((v) => (v.productId = newProduct.id));
+          await Image.bulkCreate(images, { transaction: t });
+        }
       }
       await t.commit();
-      response.status(201).json({ message: 'Product has been added successfully' });
+      response
+        .status(201)
+        .json({ message: "Product has been added successfully" });
     } catch (error) {
       console.log(error);
       await t.rollback();
@@ -133,27 +221,61 @@ class ProductController {
     const t = await sequelize.transaction();
     try {
       const { id: productId } = request.params;
-      const { name, slug, description, price, mainImg, SubCategoryId, image1, image2, image3 } = request.body;
+      const {
+        name,
+        slug,
+        description,
+        price,
+        mainImg,
+        harvestDate,
+        stock,
+        unit,
+        SubCategoryId,
+        image1,
+        image2,
+        image3,
+      } = request.body;
+      await Product.update(
+        {
+          name,
+          slug,
+          description,
+          price,
+          mainImg,
+          harvestDate,
+          stock,
+          unit,
+          SubCategoryId,
+        },
+        { where: { id: { [Op.eq]: productId } }, transaction: t }
+      );
 
-      await Product.update({ name, slug, description, price, mainImg, SubCategoryId }, { where: { id: { [Op.eq]: productId } }, transaction: t });
+      let deletedImg = [image1, image2, image3].filter(
+        (v) => !v.imgUrl && v.id
+      );
+      deletedImg = deletedImg.map((v) => v.id);
+      let newImages = [image1, image2, image3].filter((v) => v.imgUrl);
+      newImages.forEach((v) => (v.productId = productId));
 
-      let deletedImg = [image1, image2, image3].filter(v => !v.imgUrl && v.id);
-      deletedImg = deletedImg.map(v => v.id);
-      let newImages = [image1, image2, image3].filter(v => v.imgUrl);
-      newImages.forEach(v => v.productId = productId);
-
-      if (newImages.length) await Image.bulkCreate(newImages, { updateOnDuplicate: ["imgUrl"], transaction: t });
+      if (newImages.length)
+        await Image.bulkCreate(newImages, {
+          updateOnDuplicate: ["imgUrl"],
+          transaction: t,
+        });
 
       if (deletedImg.length) {
         await Image.destroy({
           where: {
-            id: { [Op.in]: deletedImg }
-          }
-        }), { transaction: t };
+            id: { [Op.in]: deletedImg },
+          },
+        }),
+          { transaction: t };
       }
 
       await t.commit();
-      response.status(200).json({ message: 'Product has been updated successfully' });
+      response
+        .status(200)
+        .json({ message: "Product has been updated successfully" });
     } catch (error) {
       console.log(error);
       await t.rollback();
@@ -165,7 +287,9 @@ class ProductController {
     try {
       const { id: productId } = request.params;
       await Product.destroy({ where: { id: { [Op.eq]: productId } } });
-      response.status(200).json({ message: 'Product has been deleted successfully' });
+      response
+        .status(200)
+        .json({ message: "Product has been deleted successfully" });
     } catch (error) {
       next(error);
     }
