@@ -5,7 +5,7 @@
     "slug": "tomat-super",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
     "price": 3000,
-    "mainImg": "https://cdn.shopify.com/s/files/1/0018/8327/5325/products/184710490.webp?v=1659441918",
+    "mainImg": "https://upload.wikimedia.org/wikipedia/commons/8/89/Tomato_je.jpg",
     "harvestDate": "2022-10-01 07:00:00+07",
     "unit": "kg",
     "stock": 100,
@@ -14,7 +14,7 @@
   },
   {
     "id": 2,
-    "name": "Jagun Super",
+    "name": "Jagung Super",
     "slug": "jagung-super",
     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis nec erat luctus, vestibulum ante sodales, imperdiet est. Vivamus sodales mauris nisi. Etiam nec lacinia sem, nec dapibus eros. Cras sed turpis vitae odio posuere hendrerit viverra a sem. Phasellus neque ante, lacinia ut nibh in, pharetra accumsan ipsum. Nulla facilisi. Fusce consectetur malesuada metus, eget lobortis diam semper at. Etiam volutpat nec dui faucibus suscipit.",
     "price": 3500,
@@ -48,7 +48,7 @@
     "harvestDate": "2022-10-01 07:00:00+07",
     "unit": "kg",
     "stock": 120,
-    "SubCategoryId": 7,
+    "SubCategoryId": 2,
     "authorId": 2
   }
 ]
