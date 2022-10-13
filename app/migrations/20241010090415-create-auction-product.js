@@ -42,6 +42,9 @@ module.exports = {
       AuctionDate: {
         type: Sequelize.DATE
       },
+      AuctionDateEnd: {
+        type: Sequelize.DATE
+      },
       lastBidPrice: {
         type: Sequelize.INTEGER
       },
