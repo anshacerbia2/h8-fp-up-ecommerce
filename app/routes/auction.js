@@ -7,6 +7,7 @@ router.get('/', AuctionController.approvedAuctions);
 router.get('/pending', AuctionController.unapprovedAuctions);
 router.get('/archived', AuctionController.archivedAuctions);
 router.post('/', UserAuthentication, AuctionController.createAuction);
+router.get('/cart', UserAuthentication, AuctionController.getAuctionCarts);
 router.get('/:id', UserAuthentication, AuctionController.approvedAuctionsById);
 router.patch('/:id/bid', UserAuthentication, AuctionController.updateBid);
 router.patch('/:id', UserAuthentication, AuthorizationAuction, AuctionController.approveAuction);

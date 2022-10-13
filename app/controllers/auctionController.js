@@ -1,4 +1,4 @@
-const { Auction, User } = require('../models');
+const { Auction, AuctionHistory, User } = require('../models');
 
 class AuctionController {
   static async createAuction(req, res, next) {
@@ -56,7 +56,7 @@ class AuctionController {
       const { id } = req.params
       const d = new Date();
       const dend = new Date();
-      dend.setMinutes(dend.getMinutes() + 2);
+      dend.setMinutes(dend.getMinutes() + 10);
       await Auction.update({ status: 'Approved', AuctionDate: d, AuctionDateEnd: dend }, { where: { id } })
       res.status(200).json({
         message: `Updated Status`
@@ -205,6 +205,38 @@ class AuctionController {
   //     next(err)
   //   }
   // }
+  static async getAuctionCarts(req, res, next) {
+    try {
+      const { id } = req.user;
+      const histories = await AuctionHistory.findAll({
+        where: {
+          WinnerId: id
+        },
+        include: [
+          {
+            model: User,
+            as: 'Seller',
+            attributes: {
+              exclude: ['password']
+            }
+          },
+          {
+            model: User,
+            as: 'Winner',
+            attributes: {
+              exclude: ['password']
+            }
+          },
+          {
+            model: Auction
+          }
+        ]
+      })
+      res.status(200).json(histories)
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 module.exports = AuctionController
