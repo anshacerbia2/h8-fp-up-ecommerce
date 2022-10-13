@@ -48,6 +48,7 @@ class chatController {
             getCollections()
             rooms = db.collection('room');
             let { currentId, targetId } = req.params
+            console.log(currentId, targetId, "line 51")
             let targetRoom = await rooms.findOne({ userIds: { $all: [+currentId, +targetId] } })
             // get data current user sama target user by id nanti
             if (!targetRoom) {
@@ -83,6 +84,7 @@ class chatController {
             getCollections()
             chats = db.collection('chat')
             let { roomId } = req.params
+            console.log(roomId, "line 85 server controlelr chat")
             let targetChats = await chats.find({ roomId: ObjectId(roomId) }).toArray()
             res.status(200).json(targetChats)
         } catch (err) {

@@ -61,6 +61,10 @@ io.on("connection", async (socket) => {
                 ...chatData
             })
         })
+        socket.on("leave-room", (name) => {
+            console.log("leave", name)
+            socket.leave(name)
+        })
         // await chats.updateMany({ roomId: ObjectId("633fc9cdfd8f9b7645d52be9") }, { $set: { roomId: ObjectId("6343a10d76db83edd1a83f34") } })
         // await rooms.deleteMany()
         // await rooms.insertOne(
