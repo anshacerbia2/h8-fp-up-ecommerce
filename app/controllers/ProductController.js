@@ -107,6 +107,37 @@ class ProductController {
     }
   }
 
+  static async fetchUserProducts(request, response, next) {
+    try {
+      const { id: userId } = request.user;
+      const options = {
+        include: [
+          {
+            model: SubCategory,
+            attributes: ["id", "name"],
+            include: {
+              model: Category,
+              attributes: ["id", "name"],
+            },
+          },
+          {
+            model: Image,
+            attributes: ["id", "imgUrl"],
+          },
+          {
+            model: User,
+            attributes: { exclude: ["password", "createdAt", "updatedAt"] },
+          },
+        ],
+        where: { authorId: { [Op.eq]: userId } },
+      };
+      const products = await Product.findAll(options);
+      response.status(200).json(products);
+    } catch (error) {
+      next(error);
+    }
+  }
+
   static async createProduct(request, response, next) {
     const t = await sequelize.transaction();
     try {
